@@ -40,14 +40,14 @@ pipeline {
         stage('Docker Push') {
             steps {
                 echo "Running in $WORKSPACE"
-                // dir("$WORKSPACE/azure-vote") [
-                //     script {
-                //         docker.withRegistry('', 'dockerhub') {
-                //             def image = docker.build('renaldomaclons/bmcicdpwj:2024')
-                //             image.push()
-                //         }
-                //     }
-                // ]
+                dir("$WORKSPACE/azure-vote") {
+                    script {
+                        docker.withRegistry('', 'dockerhub') {
+                            def image = docker.build('renaldomaclons/bmcicdpwj:2024')
+                            image.push()
+                        }
+                    }
+                }
             }
             post {
                 success {
