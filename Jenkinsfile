@@ -49,14 +49,6 @@ pipeline {
                     }
                 }
             }
-            post {
-                success {
-                    echo "Testing Passed! :)"
-                }
-                failure {
-                    echo "Testing Failed! :("
-                }
-            }
         }
     }
     post {
