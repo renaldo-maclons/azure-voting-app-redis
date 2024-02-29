@@ -42,10 +42,10 @@ pipeline {
                 echo "Running in $WORKSPACE"
                 dir("$WORKSPACE/azure-vote") {
                     script {
-                        docker.withRegistry('', 'dockerhub') {
-                            docker.build('renaldomaclons/bmcicdpwj:2024')
+                        // docker.withRegistry('', 'dockerhub') {
+                        docker.build('bmcicdpwj:2024')
                             // image.push()
-                        }
+                        // }
                     }
                 }
             }
