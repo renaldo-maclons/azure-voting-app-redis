@@ -90,7 +90,7 @@ pipeline {
                 timeout(time: 1, unit: 'HOURS')
             }
             steps {
-                echo "Timedout"
+                input message: "Deploy to Prod?"
             }
         }
         stage('Prod Deploy') {
