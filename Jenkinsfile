@@ -64,10 +64,10 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues {
+                    recordIssues(
                         tools: [grype()],
-                        aggregatingResults: true,
-                    }
+                        aggregatngResults: true,
+                    )
                 }
             }
         }
