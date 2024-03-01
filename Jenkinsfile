@@ -8,35 +8,35 @@ pipeline {
                 // Send a notification to Slack no matter the build result
                 slackSend (color: '#0000ff', message: "Starting the build for the job: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
             }
-        }
-        stage('Verify Branch') {
-            steps {
-                echo "$GIT_BRANCH"
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                sh(script: 'podman-compose build')
-            }
-        }
-        stage('Start App') {
-            steps {
-                sh(script: 'podman-compose up -d')
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                sh(script: 'pytest ./tests/test_sample.py')
-            }
-            post {
-                success {
-                    echo "Testing Passed! :)"
-                }
-                failure {
-                    echo "Testing Failed! :("
-                }
-            }
-        }
+        // }
+        // stage('Verify Branch') {
+        //     steps {
+        //         echo "$GIT_BRANCH"
+        //     }
+        // }
+        // stage('Docker Build') {
+        //     steps {
+        //         sh(script: 'podman-compose build')
+        //     }
+        // }
+        // stage('Start App') {
+        //     steps {
+        //         sh(script: 'podman-compose up -d')
+        //     }
+        // }
+        // stage('Run Tests') {
+        //     steps {
+        //         sh(script: 'pytest ./tests/test_sample.py')
+        //     }
+        //     post {
+        //         success {
+        //             echo "Testing Passed! :)"
+        //         }
+        //         failure {
+        //             echo "Testing Failed! :("
+        //         }
+        //     }
+        // }
         // stage('Docker Push') {
         //     steps {
         //         echo "Running in $WORKSPACE"
