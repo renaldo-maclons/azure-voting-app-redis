@@ -76,7 +76,7 @@ pipeline {
                 STATE = "FOO"
             }
             when {
-                branch 'feature'
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
             }
             steps {
                 echo "${STATE}"
@@ -84,13 +84,13 @@ pipeline {
         }
         stage('Approve Deploy to Prod') {
             when {
-                branch 'feature'
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
             }
             options {
                 timeout(time: 1, unit: 'HOURS')
             }
             steps {
-                slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval to deploy to Prod!")
+                slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval for Prod deployment!")
                 input message: "Deploy to Prod?"
             }
         }
@@ -99,7 +99,7 @@ pipeline {
                 STATE = "BAR"
             }
             when {
-                branch 'feature'
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
             }
             steps {
                 echo "${STATE}"
