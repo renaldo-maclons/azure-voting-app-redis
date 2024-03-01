@@ -90,6 +90,7 @@ pipeline {
                 timeout(time: 1, unit: 'HOURS')
             }
             steps {
+                slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval to deploy to Prod!")
                 input message: "Deploy to Prod?"
             }
         }
