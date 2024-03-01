@@ -37,46 +37,46 @@ pipeline {
                 }
             }
         }
-        stage('Docker Push') {
-            steps {
-                echo "Running in $WORKSPACE"
-                dir("$WORKSPACE/azure-vote") {
-                    script {
-                        docker.withRegistry('', 'dockerhub') {
-                            def image = docker.build('renaldomaclons/bmcicdpwj:2024')
-                            image.push()
-                        }
-                    }
-                }
-            }
-            post {
-                success {
-                    echo "Docker image pushed to registry! :)"
-                }
-                failure {
-                    echo "Docker image upload failed! :("
-                }
-            }
-        }
-        stage('Run Grype Tests') {
-            steps {
-                grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'registry:renaldomaclons/bmcicdpwj:2024'
-            }
-            post {
-                always {
-                    recordIssues(
-                        tools: [grype()],
-                        aggregatingResults: true,
-                    )
-                }
-            }
-        }
+        // stage('Docker Push') {
+        //     steps {
+        //         echo "Running in $WORKSPACE"
+        //         dir("$WORKSPACE/azure-vote") {
+        //             script {
+        //                 docker.withRegistry('', 'dockerhub') {
+        //                     def image = docker.build('renaldomaclons/bmcicdpwj:2024')
+        //                     image.push()
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     post {
+        //         success {
+        //             echo "Docker image pushed to registry! :)"
+        //         }
+        //         failure {
+        //             echo "Docker image upload failed! :("
+        //         }
+        //     }
+        // }
+        // stage('Run Grype Tests') {
+        //     steps {
+        //         grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'registry:renaldomaclons/bmcicdpwj:2024'
+        //     }
+        //     post {
+        //         always {
+        //             recordIssues(
+        //                 tools: [grype()],
+        //                 aggregatingResults: true,
+        //             )
+        //         }
+        //     }
+        // }
         stage('QA Deploy') {
             environment {
                 STATE = "FOO"
             }
             when {
-                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                branch 'feature'
             }
             steps {
                 echo "${STATE}"
@@ -84,7 +84,7 @@ pipeline {
         }
         stage('Approve Deploy to Prod') {
             when {
-                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                branch 'feature'
             }
             options {
                 timeout(time: 1, unit: 'HOURS')
@@ -98,7 +98,7 @@ pipeline {
                 STATE = "BAR"
             }
             when {
-                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
+                branch 'feature'
             }
             steps {
                 echo "${STATE}"
