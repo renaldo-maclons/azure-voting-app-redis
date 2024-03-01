@@ -107,12 +107,13 @@ pipeline {
         // }
         stage('test') {
             steps {
-                // One or more steps need to be included within the steps block.
+                {
+                    sh(script: 'grype renaldomaclons/bmcicdpwj:2024')
+                }
             }
 
             agent {
                 docker {
-                args '-v /var/run/user/1000/podman/podman.sock:/var/run/docker.sock -e GRYPE_LOG_VERBOSITY="1"'
                 image 'anchore/grype:latest'
                 }
             }
