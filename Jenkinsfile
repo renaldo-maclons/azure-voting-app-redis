@@ -58,6 +58,19 @@ pipeline {
                 }
             }
         }
+        stage('Run Grype Tests') {
+            steps {
+                grypeScan autoInstall: false, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'registry:renaldomaclons/bmcicdpwj:2024'
+            }
+            post {
+                always {
+                    recordIssues {
+                        tools: [grype()],
+                        aggregatingResults: true,
+                    }
+                }
+            }
+        }
     }
     post {
         always {
