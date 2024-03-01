@@ -8,7 +8,7 @@ pipeline {
                 // Send a notification to Slack no matter the build result
                 slackSend (color: '#0000ff', message: "Starting the build for the job: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
             }
-        // }
+        }
         // stage('Verify Branch') {
         //     steps {
         //         echo "$GIT_BRANCH"
