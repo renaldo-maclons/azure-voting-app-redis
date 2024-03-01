@@ -76,7 +76,7 @@ pipeline {
                 STATE = "FOO"
             }
             when {
-                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
             }
             steps {
                 echo "${STATE}"
@@ -84,7 +84,7 @@ pipeline {
         }
         stage('Approve Deploy to Prod') {
             when {
-                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
             }
             options {
                 timeout(time: 1, unit: 'HOURS')
@@ -98,7 +98,7 @@ pipeline {
                 STATE = "BAR"
             }
             when {
-                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+                expression { return env.BRANCH_NAME ==~ /feature\/.*/ }
             }
             steps {
                 echo "${STATE}"
