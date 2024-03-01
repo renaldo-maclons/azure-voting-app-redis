@@ -71,38 +71,50 @@ pipeline {
         //         }
         //     }
         // }
-        stage('QA Deploy') {
-            environment {
-                STATE = "FOO"
-            }
-            when {
-                expression { env.BRANCH_NAME ==~ /feature.*/ }
-            }
+        // stage('QA Deploy') {
+        //     environment {
+        //         STATE = "FOO"
+        //     }
+        //     when {
+        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
+        //     }
+        //     steps {
+        //         echo "${STATE}"
+        //     }
+        // }
+        // stage('Approve Deploy to Prod') {
+        //     when {
+        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
+        //     }
+        //     options {
+        //         timeout(time: 1, unit: 'HOURS')
+        //     }
+        //     steps {
+        //         slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval for Prod deployment!")
+        //         input message: "Deploy to Prod?"
+        //     }
+        // }
+        // stage('Prod Deploy') {
+        //     environment {
+        //         STATE = "BAR"
+        //     }
+        //     when {
+        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
+        //     }
+        //     steps {
+        //         echo "${STATE}"
+        //     }
+        // }
+        stage('test') {
             steps {
-                echo "${STATE}"
+                // One or more steps need to be included within the steps block.
             }
-        }
-        stage('Approve Deploy to Prod') {
-            when {
-                expression { env.BRANCH_NAME ==~ /feature.*/ }
-            }
-            options {
-                timeout(time: 1, unit: 'HOURS')
-            }
-            steps {
-                slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval for Prod deployment!")
-                input message: "Deploy to Prod?"
-            }
-        }
-        stage('Prod Deploy') {
-            environment {
-                STATE = "BAR"
-            }
-            when {
-                expression { env.BRANCH_NAME ==~ /feature.*/ }
-            }
-            steps {
-                echo "${STATE}"
+
+            agent {
+                docker {
+                args '-v /var/run/user/1000/podman/podman.sock:/var/run/docker.sock -e GRYPE_LOG_VERBOSITY="1"'
+                image 'anchore/grype:latest'
+                }
             }
         }
     }
