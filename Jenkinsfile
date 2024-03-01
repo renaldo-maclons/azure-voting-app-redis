@@ -66,7 +66,7 @@ pipeline {
                 always {
                     recordIssues(
                         tools: [grype()],
-                        aggregatngResults: true,
+                        aggregatingResults: true,
                     )
                 }
             }
