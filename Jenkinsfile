@@ -71,6 +71,39 @@ pipeline {
                 }
             }
         }
+        stage('QA Deploy') {
+            environment {
+                STATE = "FOO"
+            }
+            when {
+                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+            }
+            steps {
+                echo "${STATE}"
+            }
+        }
+        stage('Approve Deploy to Prod') {
+            when {
+                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS')
+            }
+            steps {
+                echo "Timedout"
+            }
+        }
+        stage('Prod Deploy') {
+            environment {
+                STATE = "BAR"
+            }
+            when {
+                isPatch = (env.BRANCH_NAME ==~ /feature/) 
+            }
+            steps {
+                echo "${STATE}"
+            }
+        }
     }
     post {
         always {
