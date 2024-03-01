@@ -107,11 +107,8 @@ pipeline {
         // }
         stage('test') {
             steps {
-                {
-                    sh(script: 'grype renaldomaclons/bmcicdpwj:2024')
-                }
+                sh(script: 'grype renaldomaclons/bmcicdpwj:2024')
             }
-
             agent {
                 docker {
                 image 'anchore/grype:latest'
