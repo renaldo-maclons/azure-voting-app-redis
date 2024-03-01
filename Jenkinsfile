@@ -111,7 +111,8 @@ pipeline {
             }
             agent {
                 docker {
-                image 'anchore/grype:latest'
+                    args '-rm'
+                    image 'anchore/grype:latest'
                 }
             }
         }
