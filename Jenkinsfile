@@ -9,105 +9,100 @@ pipeline {
                 slackSend (color: '#0000ff', message: "Starting the build for the job: ${env.JOB_NAME} #${env.BUILD_NUMBER}")
             }
         }
-        // stage('Verify Branch') {
-        //     steps {
-        //         echo "$GIT_BRANCH"
-        //     }
-        // }
-        // stage('Docker Build') {
-        //     steps {
-        //         sh(script: 'podman-compose build')
-        //     }
-        // }
-        // stage('Start App') {
-        //     steps {
-        //         sh(script: 'podman-compose up -d')
-        //     }
-        // }
-        // stage('Run Tests') {
-        //     steps {
-        //         sh(script: 'pytest ./tests/test_sample.py')
-        //     }
-        //     post {
-        //         success {
-        //             echo "Testing Passed! :)"
-        //         }
-        //         failure {
-        //             echo "Testing Failed! :("
-        //         }
-        //     }
-        // }
-        // stage('Docker Push') {
-        //     steps {
-        //         echo "Running in $WORKSPACE"
-        //         dir("$WORKSPACE/azure-vote") {
-        //             script {
-        //                 docker.withRegistry('', 'dockerhub') {
-        //                     def image = docker.build('renaldomaclons/bmcicdpwj:2024')
-        //                     image.push()
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             echo "Docker image pushed to registry! :)"
-        //         }
-        //         failure {
-        //             echo "Docker image upload failed! :("
-        //         }
-        //     }
-        // }
-        // stage('Run Grype Tests') {
-        //     steps {
-        //         grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'registry:renaldomaclons/bmcicdpwj:2024'
-        //     }
-        //     post {
-        //         always {
-        //             recordIssues(
-        //                 tools: [grype()],
-        //                 aggregatingResults: true,
-        //             )
-        //         }
-        //     }
-        // }
-        // stage('QA Deploy') {
-        //     environment {
-        //         STATE = "FOO"
-        //     }
-        //     when {
-        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
-        //     }
-        //     steps {
-        //         echo "${STATE}"
-        //     }
-        // }
-        // stage('Approve Deploy to Prod') {
-        //     when {
-        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
-        //     }
-        //     options {
-        //         timeout(time: 1, unit: 'HOURS')
-        //     }
-        //     steps {
-        //         slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval for Prod deployment!")
-        //         input message: "Deploy to Prod?"
-        //     }
-        // }
-        // stage('Prod Deploy') {
-        //     environment {
-        //         STATE = "BAR"
-        //     }
-        //     when {
-        //         expression { env.BRANCH_NAME ==~ /feature.*/ }
-        //     }
-        //     steps {
-        //         echo "${STATE}"
-        //     }
-        // }
-        stage('test') {
+        stage('Verify Branch') {
             steps {
-                sh(script: 'docker run --rm --name grype-scanner anchore/grype:latest renaldomaclons/bmcicdpwj:2024')
+                echo "$GIT_BRANCH"
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                sh(script: 'podman-compose build')
+            }
+        }
+        stage('Start App') {
+            steps {
+                sh(script: 'podman-compose up -d')
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                sh(script: 'pytest ./tests/test_sample.py')
+            }
+            post {
+                success {
+                    echo "Testing Passed! :)"
+                }
+                failure {
+                    echo "Testing Failed! :("
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                echo "Running in $WORKSPACE"
+                dir("$WORKSPACE/azure-vote") {
+                    script {
+                        docker.withRegistry('', 'dockerhub') {
+                            def image = docker.build('renaldomaclons/bmcicdpwj:2024')
+                            image.push()
+                        }
+                    }
+                }
+            }
+            post {
+                success {
+                    echo "Docker image pushed to registry! :)"
+                }
+                failure {
+                    echo "Docker image upload failed! :("
+                }
+            }
+        }
+        stage('Run Grype Tests') {
+            steps {
+                grypeScan autoInstall: true, repName: 'grypeReport_${JOB_NAME}_${BUILD_NUMBER}.txt', scanDest: 'registry:renaldomaclons/bmcicdpwj:2024'
+            }
+            post {
+                always {
+                    recordIssues(
+                        tools: [grype()],
+                        aggregatingResults: true,
+                    )
+                }
+            }
+        }
+        stage('QA Deploy') {
+            environment {
+                STATE = "FOO"
+            }
+            when {
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
+            }
+            steps {
+                echo "${STATE}"
+            }
+        }
+        stage('Approve Deploy to Prod') {
+            when {
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS')
+            }
+            steps {
+                slackSend (color: '#FFFF00', message: "Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - Status: Awaiting approval for Prod deployment!")
+                input message: "Deploy to Prod?"
+            }
+        }
+        stage('Prod Deploy') {
+            environment {
+                STATE = "BAR"
+            }
+            when {
+                expression { env.BRANCH_NAME ==~ /feature.*/ }
+            }
+            steps {
+                echo "${STATE}"
             }
         }
     }
